@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write --experimental-cli src/",
-    "deploy": "npm run build && git diff --quiet dist || (git add --force dist && git commit -m 'Deploy') && git subtree push --prefix dist origin gh-pages"
+    "deploy": "npm run build && git diff --quiet dist || (git add --force dist && git commit -m 'Deploy') && git push origin `git subtree split --prefix dist main`:gh-pages --force"
   },
   "dependencies": {
     "vue": "^3.5.42"
