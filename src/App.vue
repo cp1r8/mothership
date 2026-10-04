@@ -8,7 +8,7 @@ import TheWelcome from './components/TheWelcome.vue'
     <img alt="Monarch logo" class="logo" src="./assets/logo.svg" width="148" height="148" />
 
     <div class="wrapper">
-      <HelloWorld title="I did a thing!" subtitle="Well, ain't that special." />
+      <HelloWorld title="I did a thing!" subtitle="Well, ain't that… special." />
     </div>
   </header>
 

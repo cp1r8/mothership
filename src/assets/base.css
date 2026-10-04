@@ -54,18 +54,13 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
   font-weight: normal;
+  margin: 0;
 }
 
 body {
-  min-height: 100vh;
-  color: var(--color-text);
   background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
-  line-height: 1.6;
+  color: var(--color-text);
   font-family:
     Inter,
     -apple-system,
@@ -80,7 +75,12 @@ body {
     'Helvetica Neue',
     sans-serif;
   font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
   text-rendering: optimizeLegibility;
+  transition:
+    color 0.5s,
+    background-color 0.5s;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
