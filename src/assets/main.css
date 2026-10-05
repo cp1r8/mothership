@@ -12,7 +12,12 @@ a,
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
-  padding: 3px;
+  /* padding: 3px; */
+}
+
+i {
+  font-family: 'Noto Emoji', sans-serif;
+  font-style: normal;
 }
 
 @media (hover: hover) {
@@ -32,4 +37,18 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+}
+
+/* cathode-green theme */
+.cathode-green {
+  color: #f0fff8;
+  text-shadow:
+    0 0 3px #80ffc0,
+    0 0 10px #00ff66,
+    0 0 20px #00ff66,
+    0 0 30px #00ff66;
+}
+
+.cathode-green a {
+  color: #80ffc0;
 }

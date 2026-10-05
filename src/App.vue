@@ -1,14 +1,14 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import Headline from './components/Headline.vue'
 import TheWelcome from './components/TheWelcome.vue'
 </script>
 
 <template>
-  <header>
+  <header class="cathode-green">
     <img alt="Monarch logo" class="logo" src="./assets/logo.svg" width="148" height="148" />
 
     <div class="wrapper">
-      <HelloWorld title="I did a thing!" subtitle="Well, ain't that… special." />
+      <Headline title="Cloudbank®" subtitle="Synthetic Production Facility" />
     </div>
   </header>
 
