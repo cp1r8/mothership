@@ -42,19 +42,19 @@ const light = computed(() => icon(described.value ? icons.light[environment.valu
         class="mx-auto my-2 size-24 rounded-full border-3 border-dotted border-phosphor-200 @[10rem]:size-32"
       >
         <button
-          class="flex size-full items-center justify-center border-none"
+          class="flex size-full items-center justify-center border-none p-0"
           title="Edit zone"
           @click="openZoneModal"
         >
-          <i :class="atmosphere.classes">{{ atmosphere.text }}</i>
+          <i class="glyph-centred" :class="atmosphere.classes">{{ atmosphere.text }}</i>
         </button>
       </div>
     </div>
 
     <div class="m-2 flex justify-evenly gap-2 py-1 text-2xl">
+      <i :class="light.classes" title="Light">{{ light.text }}</i>
       <i :class="gravity.classes" title="Gravity">{{ gravity.text }}</i>
       <i :class="radiation.classes" title="Radiation">{{ radiation.text }}</i>
-      <i :class="light.classes" title="Light">{{ light.text }}</i>
     </div>
   </div>
 </template>

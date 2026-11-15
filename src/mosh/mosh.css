@@ -28,6 +28,21 @@
     display: none;
   }
 
+  /*
+   * A large Noto Emoji glyph in a box one em high. Firefox draws these glyphs
+   * about 0.07em higher than Chrome, so they're nudged down there.
+   */
+  .mosh .glyph-centred {
+    display: block;
+    line-height: 1;
+  }
+
+  @supports (-moz-appearance: none) {
+    .mosh .glyph-centred {
+      translate: 0 0.07em;
+    }
+  }
+
   .bg-cathode {
     background-color: #282828;
   }
@@ -54,6 +69,10 @@
   .mosh select:focus-visible,
   .mosh button:focus-visible {
     @apply outline-2 outline-phosphor-200;
+  }
+
+  .mosh textarea {
+    @apply rounded-lg border-1 border-gray-900 bg-phosphor-900/60 px-2 py-1 font-mono;
   }
 
   .mosh input:disabled {

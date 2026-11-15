@@ -1,6 +1,8 @@
 <script setup>
 defineProps({
   open: { type: Boolean, required: true },
+  // Wider dialog, for content such as the character generators.
+  wide: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['cancel', 'confirm'])
@@ -14,10 +16,11 @@ const emit = defineEmits(['cancel', 'confirm'])
       @keydown.esc="emit('cancel')"
     >
       <form
-        class="mx-auto w-full max-w-md overflow-hidden rounded-lg bg-phosphor-900 shadow-xl"
+        class="mx-auto max-h-full w-full overflow-y-auto rounded-lg bg-phosphor-900 shadow-xl"
+        :class="wide ? 'max-w-3xl' : 'max-w-md'"
         @submit.prevent="emit('confirm')"
       >
-        <div class="flex flex-col gap-4 border-b border-phosphor-200 p-4">
+        <div v-if="$slots.header" class="flex flex-col gap-4 border-b border-phosphor-200 p-4">
           <div class="flex items-center gap-2">
             <slot name="header" />
           </div>
@@ -27,9 +30,11 @@ const emit = defineEmits(['cancel', 'confirm'])
           <slot />
         </div>
 
-        <div class="flex items-center justify-end space-x-2 border-t border-phosphor-200 p-4">
-          <button type="button" @click="emit('cancel')">CANCEL</button>
-          <button type="submit">CONFIRM</button>
+        <div class="flex flex-wrap items-center justify-end gap-2 border-t border-phosphor-200 p-4">
+          <slot name="footer">
+            <button type="button" @click="emit('cancel')">CANCEL</button>
+            <button type="submit">CONFIRM</button>
+          </slot>
         </div>
       </form>
     </div>
