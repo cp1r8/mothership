@@ -23,7 +23,7 @@ export const directions = {
 // Each entry is [text, ...classes].
 export const icons = {
   atmosphere: {
-    breathable: ['😐'], // 🙂
+    breathable: ['😐', 'cathode-green'], // 🙂
     corrosive: ['⚠︎', 'amber'], // 🫠
     extreme_cold: ['🥶', 'cyan'],
     extreme_heat: ['🥵', 'amber'],

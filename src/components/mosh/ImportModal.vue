@@ -1,19 +1,25 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useMosh } from '@/mosh/useMosh.js'
 import MoshModal from './MoshModal.vue'
 
-const { closeImportModal, importModalOpen, importZones } = useMosh()
+const { closeImportModal, importData, importKind, importModalOpen } = useMosh()
+
+const titles = {
+  zones: 'IMPORT ZONES',
+  crew: 'IMPORT CREW',
+  contractors: 'IMPORT NPCS',
+  creatures: 'IMPORT PETS',
+}
+const title = computed(() => titles[importKind.value])
 
 const text = ref('')
 const error = ref('')
-const status = ref('')
 
 watch(importModalOpen, (open) => {
   if (open) {
     text.value = ''
     error.value = ''
-    status.value = ''
   }
 })
 
@@ -40,8 +46,7 @@ function confirm() {
   }
 
   try {
-    const count = importZones(text.value)
-    status.value = `Merged ${count} zone${count === 1 ? '' : 's'}.`
+    importData(text.value)
     error.value = ''
     closeImportModal()
   } catch (e) {
@@ -53,7 +58,7 @@ function confirm() {
 <template>
   <MoshModal :open="importModalOpen" @cancel="closeImportModal" @confirm="confirm">
     <template #header>
-      <span class="text-lg font-semibold">IMPORT ZONES</span>
+      <span class="text-lg font-semibold">{{ title }}</span>
     </template>
 
     <div class="flex items-center gap-2">

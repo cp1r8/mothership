@@ -11,6 +11,7 @@ import {
   STORAGE_KEY_MAP,
   directions,
 } from './constants.js'
+import { clearRecords, loadRecords, mergeRecords } from '@/personnel/records.js'
 import { formatDate, formatTime, pad2 } from './format.js'
 
 const MOSH_KEY = Symbol('mosh')
@@ -81,6 +82,7 @@ function createMosh() {
   const zoneModalOpen = ref(false)
   const exitModalOpen = ref(false)
   const importModalOpen = ref(false)
+  const importKind = ref('zones') // zones | crew | contractors | creatures
   // Settings offered by the zone modal for a zone that hasn't been described.
   const zoneDefaults = ref({})
 
@@ -332,7 +334,8 @@ function createMosh() {
     persistMap()
   }
 
-  function openImportModal() {
+  function openImportModal(kind = 'zones') {
+    importKind.value = kind
     importModalOpen.value = true
     suspendCountdown()
   }
@@ -393,6 +396,15 @@ function createMosh() {
     return entries.length
   }
 
+  /** Merges a JSON blob into whatever the import modal was opened for. */
+  function importData(text) {
+    const count =
+      importKind.value === 'zones' ? importZones(text) : mergeRecords(importKind.value, text)
+
+    log(`Imported ${count} ${count === 1 ? 'entry' : 'entries'}.`)
+    return count
+  }
+
   function takeExit(exit) {
     // A new zone starts with the settings of the zone being left.
     const { atmosphere, gravity, light, radiation, space } = environment.value
@@ -407,12 +419,31 @@ function createMosh() {
     }
   }
 
+  function exportRecords(kind, noun) {
+    const records = loadRecords(kind)
+
+    if (!records.length) {
+      log(`No ${noun}s to export.`, 'amber')
+      return
+    }
+
+    const prefix = { contractors: 'npcs', creatures: 'pets' }[kind] ?? kind
+
+    const keyed = Object.fromEntries(records.map(({ id, ...record }) => [id, record]))
+
+    download(prefix, 'json', JSON.stringify(keyed, null, 2), 'application/json')
+    log(`Exported ${records.length} ${noun}${records.length === 1 ? '' : 's'}.`)
+  }
+
   // --- commands ------------------------------------------------------------
 
   const commands = {
     clear() {
       window.localStorage.removeItem(STORAGE_KEY_JOURNAL)
       window.localStorage.removeItem(STORAGE_KEY_MAP)
+      clearRecords('crew')
+      clearRecords('contractors')
+      clearRecords('creatures')
       log('Local storage cleared.', 'blink', 'ruby')
     },
 
@@ -459,6 +490,12 @@ function createMosh() {
       log(`Exported ${count} journal entr${count === 1 ? 'y' : 'ies'}.`)
     },
 
+    'export-crew': () => exportRecords('crew', 'crew member'),
+
+    'export-pets': () => exportRecords('creatures', 'creature'),
+
+    'export-npcs': () => exportRecords('contractors', 'contractor'),
+
     'export-map'() {
       const count = Object.keys(map.value).length
 
@@ -473,8 +510,14 @@ function createMosh() {
     },
 
     'import-map'() {
-      openImportModal()
+      openImportModal('zones')
     },
+
+    'import-crew': () => openImportModal('crew'),
+
+    'import-npcs': () => openImportModal('contractors'),
+
+    'import-pets': () => openImportModal('creatures'),
 
     jump(zone) {
       if (!(zone in map.value)) {
@@ -550,6 +593,7 @@ function createMosh() {
     countdownValue,
     encounterRate,
     exitModalOpen,
+    importKind,
     importModalOpen,
     input,
     inputEl,
@@ -570,7 +614,7 @@ function createMosh() {
     closeZoneModal,
     dismissEncounter,
     expireCountdown,
-    importZones,
+    importData,
     load,
     openExitModal,
     openZoneModal,

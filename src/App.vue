@@ -3,6 +3,7 @@ import Headline from './components/Headline.vue'
 import CountdownPanel from './components/mosh/CountdownPanel.vue'
 import EncounterPanel from './components/mosh/EncounterPanel.vue'
 import MoshApp from './components/mosh/MoshApp.vue'
+import PersonnelRoster from './components/personnel/PersonnelRoster.vue'
 import StatusBar from './components/mosh/StatusBar.vue'
 import ZonePanel from './components/mosh/ZonePanel.vue'
 import { provideMosh } from './mosh/useMosh.js'
@@ -33,6 +34,11 @@ const { encounterActive } = provideMosh()
       <ZonePanel />
       <EncounterPanel v-if="encounterActive" />
     </div>
+
+    <!-- Character generators (from the Personnel spreadsheet). -->
+    <div class="personnel mosh cathode-green">
+      <PersonnelRoster />
+    </div>
   </div>
 
   <main>
@@ -54,6 +60,10 @@ header {
   display: flex;
   justify-content: center;
   margin-top: 2rem;
+}
+
+.personnel {
+  margin-bottom: 2rem;
 }
 
 .panels {
@@ -88,7 +98,8 @@ header {
 
   /* Same right padding as the header, so the panels match its width. */
   .countdown,
-  .panels {
+  .panels,
+  .personnel {
     padding-right: calc(var(--section-gap) / 2);
   }
 
@@ -97,6 +108,10 @@ header {
   }
 
   .panels {
+    margin-bottom: 1rem;
+  }
+
+  .personnel {
     margin-bottom: 0;
   }
 
