@@ -1,0 +1,207 @@
+/*
+ * MOSH styles, ported from the prototype's style/base.css and its inline
+ * Tailwind <style>. Everything is scoped under .mosh so it can't leak into the
+ * rest of the app, and sits in the components layer so Tailwind utility
+ * classes in templates can still override it.
+ */
+@layer components {
+  .mosh {
+    accent-color: var(--color-phosphor-500);
+    font-family: 'Kode Mono', monospace;
+    font-size: 16px;
+  }
+
+  .mosh p {
+    margin: 0;
+  }
+
+  .mosh i {
+    font-family: 'Noto Emoji', sans-serif;
+    font-style: normal;
+  }
+
+  .mosh details > summary {
+    list-style: none;
+  }
+
+  .mosh details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .bg-cathode {
+    background-color: #282828;
+  }
+
+  /* form controls */
+  .mosh button {
+    @apply cursor-pointer rounded-xl border-1 border-gray-900 px-4 py-2;
+  }
+
+  .mosh button:disabled {
+    @apply cursor-default opacity-50;
+  }
+
+  .mosh button:not(:disabled):hover,
+  .mosh select:hover {
+    @apply border-white bg-white text-gray-700;
+  }
+
+  .mosh input {
+    @apply rounded-lg border-1 border-gray-900 bg-phosphor-900/60 px-2 py-1;
+  }
+
+  .mosh input:focus-visible,
+  .mosh select:focus-visible,
+  .mosh button:focus-visible {
+    @apply outline-2 outline-phosphor-200;
+  }
+
+  .mosh input:disabled {
+    @apply bg-phosphor-800;
+  }
+
+  .mosh select {
+    @apply cursor-pointer appearance-none rounded-lg border-1 border-gray-900 py-1 pl-4;
+  }
+
+  .mosh nav button {
+    @apply flex items-baseline gap-1 bg-phosphor-600/25 px-2 py-0;
+  }
+
+  .mosh nav code {
+    @apply text-lg;
+  }
+
+  .mosh nav i {
+    @apply py-1 text-sm;
+  }
+
+  .mosh nav span {
+    @apply text-base;
+  }
+
+  /* effects */
+  .blink {
+    animation: 500ms blink step-end infinite;
+  }
+
+  .blink-1s {
+    animation: 1s blink step-end infinite;
+  }
+
+  .blink-2s {
+    animation: 2s blink step-end infinite;
+  }
+
+  .pulse {
+    animation: pulse 500ms infinite;
+  }
+
+  .pulse-1s {
+    animation: pulse 1s infinite;
+  }
+
+  .pulse-2s {
+    animation: pulse 2s infinite;
+  }
+
+  .flicker {
+    animation: flicker 500ms infinite;
+  }
+
+  .flicker-1s {
+    animation: flicker 1s infinite;
+  }
+
+  .flicker-2s {
+    animation: flicker 2s infinite;
+  }
+}
+
+@keyframes blink {
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.333;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.27861;
+  }
+  5% {
+    opacity: 0.34769;
+  }
+  10% {
+    opacity: 0.23604;
+  }
+  15% {
+    opacity: 0.90626;
+  }
+  20% {
+    opacity: 0.18128;
+  }
+  25% {
+    opacity: 0.83891;
+  }
+  30% {
+    opacity: 0.65583;
+  }
+  35% {
+    opacity: 0.67807;
+  }
+  40% {
+    opacity: 0.26559;
+  }
+  45% {
+    opacity: 0.84693;
+  }
+  50% {
+    opacity: 0.96019;
+  }
+  55% {
+    opacity: 0.08594;
+  }
+  60% {
+    opacity: 0.20313;
+  }
+  65% {
+    opacity: 0.71988;
+  }
+  70% {
+    opacity: 0.53455;
+  }
+  75% {
+    opacity: 0.37288;
+  }
+  80% {
+    opacity: 0.71428;
+  }
+  85% {
+    opacity: 0.70419;
+  }
+  90% {
+    opacity: 0.7003;
+  }
+  95% {
+    opacity: 0.36108;
+  }
+  100% {
+    opacity: 0.24387;
+  }
+}
