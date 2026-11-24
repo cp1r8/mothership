@@ -34,16 +34,17 @@ const { encounterActive } = provideMosh()
       <ZonePanel />
       <EncounterPanel v-if="encounterActive" />
     </div>
-
-    <!-- Character generators (from the Personnel spreadsheet). -->
-    <div class="personnel mosh cathode-green">
-      <PersonnelRoster />
-    </div>
   </div>
 
-  <main>
+  <!-- On wide screens the session fills the row's height, which the left column sets. -->
+  <main class="lg:relative">
     <MoshApp />
   </main>
+
+  <!-- Saved crew and contractors (from the Personnel spreadsheet), full width. -->
+  <div class="personnel mosh cathode-green">
+    <PersonnelRoster />
+  </div>
 </template>
 
 <style scoped>
@@ -63,7 +64,8 @@ header {
 }
 
 .personnel {
-  margin-bottom: 2rem;
+  grid-column: 1 / -1;
+  margin-top: 2rem;
 }
 
 .panels {
@@ -98,8 +100,7 @@ header {
 
   /* Same right padding as the header, so the panels match its width. */
   .countdown,
-  .panels,
-  .personnel {
+  .panels {
     padding-right: calc(var(--section-gap) / 2);
   }
 
@@ -109,10 +110,6 @@ header {
 
   .panels {
     margin-bottom: 1rem;
-  }
-
-  .personnel {
-    margin-bottom: 0;
   }
 
   header .wrapper {

@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { icons } from '@/mosh/constants.js'
+import ExitNav from './ExitNav.vue'
 import { useMosh } from '@/mosh/useMosh.js'
 
 const { environment, openZoneModal, pending } = useMosh()
@@ -36,7 +37,10 @@ const light = computed(() => icon(described.value ? icons.light[environment.valu
   <!-- Fills its share of the row; a size container so the circle can shrink. -->
   <div class="@container min-w-0 flex-1 rounded-xl bg-phosphor-600/25">
     <div class="flex flex-col text-center">
-      <h3 class="border-b border-gray-900 py-2 text-xl">{{ pending.zone ?? '-?-' }}</h3>
+      <div class="flex items-center justify-center gap-2 border-b border-gray-900 px-2 py-2">
+        <h3 class="flex-none text-xl">{{ pending.zone ?? '-?-' }}</h3>
+        <ExitNav class="min-w-0" />
+      </div>
 
       <div
         class="mx-auto my-2 size-24 rounded-full border-3 border-dotted border-phosphor-200 @[10rem]:size-32"

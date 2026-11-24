@@ -2,7 +2,6 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 import { useMosh } from '@/mosh/useMosh.js'
 import ExitModal from './ExitModal.vue'
-import ExitNav from './ExitNav.vue'
 import ImportModal from './ImportModal.vue'
 import SessionInput from './SessionInput.vue'
 import SessionLog from './SessionLog.vue'
@@ -15,9 +14,7 @@ onBeforeUnmount(stop)
 </script>
 
 <template>
-  <div class="mosh cathode-green bg-cathode flex h-[80vh] flex-col gap-2 rounded-xl p-4">
-    <ExitNav />
-
+  <div class="mosh cathode-green bg-cathode flex h-[60vh] flex-col gap-2 rounded-xl p-4 lg:absolute lg:inset-0 lg:h-auto">
     <SessionLog />
     <SessionInput />
 

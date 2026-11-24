@@ -1,9 +1,11 @@
 <script setup>
 /*
- * The saved crew members and contractors as cards (one to three a row), with
- * buttons to generate new ones. A card opens the character's full details.
+ * The saved crew members and contractors as centered cards. A card opens the
+ * character's full details. The generators are opened by the /crew and /npc
+ * session commands.
  */
 import { computed, ref } from 'vue'
+import { useMosh } from '@/mosh/useMosh.js'
 import { shortName } from '@/personnel/names.js'
 import { useRecords } from '@/personnel/records.js'
 import NewContractor from './NewContractor.vue'
@@ -20,22 +22,17 @@ const cards = computed(() => [
   ...contractors.value.map((record) => ({ kind: 'contractors', record, role: record.occupation })),
 ])
 
-// Which generator is open: 'crew', 'contractor' or null.
-const dialog = ref(null)
+const { closeGenerator, generatorDialog } = useMosh()
 const viewing = ref(null)
 </script>
 
 <template>
-  <section class="@container rounded-xl bg-phosphor-600/25">
-    <PhosphorFilter />
-
-    <h3 class="border-b border-gray-900 py-2 text-center text-xl">PERSONNEL</h3>
-
-    <ul class="grid grid-cols-1 gap-2 p-3 @md:grid-cols-2 @2xl:grid-cols-3">
-      <li v-for="card in cards" :key="`${card.kind}:${card.record.id}`">
+  <section v-if="cards.length">
+    <ul class="flex flex-wrap justify-center gap-3">
+      <li v-for="card in cards" :key="`${card.kind}:${card.record.id}`" class="w-72 max-w-full rounded-xl bg-phosphor-600/25">
         <button
           type="button"
-          class="card flex w-full items-center gap-3 text-left"
+          class="card flex w-full items-center gap-3 border-none bg-transparent text-left"
           :title="card.record.name"
           @click="viewing = card"
         >
@@ -50,30 +47,18 @@ const viewing = ref(null)
           </span>
         </button>
       </li>
-
-      <li>
-        <button type="button" class="add size-full" @click="dialog = 'crew'">+ CREW MEMBER</button>
-      </li>
-      <li>
-        <button type="button" class="add size-full" @click="dialog = 'contractor'">
-          + CONTRACTOR
-        </button>
-      </li>
     </ul>
-
-    <NewCrewMember :open="dialog === 'crew'" @close="dialog = null" />
-    <NewContractor :open="dialog === 'contractor'" @close="dialog = null" />
-    <PersonnelDossier :entry="viewing" @close="viewing = null" />
   </section>
+
+  <!-- Outside the section, which is hidden until there are cards. -->
+  <PhosphorFilter />
+  <NewCrewMember :open="generatorDialog === 'crew'" @close="closeGenerator" />
+  <NewContractor :open="generatorDialog === 'contractor'" @close="closeGenerator" />
+  <PersonnelDossier :entry="viewing" @close="viewing = null" />
 </template>
 
 <style scoped>
 .card {
-  padding: 0.375rem;
-}
-
-.add {
-  min-height: 4.25rem;
-  border-style: dashed;
+  padding: 0.5rem;
 }
 </style>

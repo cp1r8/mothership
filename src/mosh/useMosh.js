@@ -82,6 +82,7 @@ function createMosh() {
   const zoneModalOpen = ref(false)
   const exitModalOpen = ref(false)
   const importModalOpen = ref(false)
+  const generatorDialog = ref(null) // crew | contractor | null
   const importKind = ref('zones') // zones | crew | contractors | creatures
   // Settings offered by the zone modal for a zone that hasn't been described.
   const zoneDefaults = ref({})
@@ -334,6 +335,16 @@ function createMosh() {
     persistMap()
   }
 
+  function openGenerator(kind) {
+    generatorDialog.value = kind
+    suspendCountdown()
+  }
+
+  function closeGenerator() {
+    generatorDialog.value = null
+    focusInput()
+  }
+
   function openImportModal(kind = 'zones') {
     importKind.value = kind
     importModalOpen.value = true
@@ -438,6 +449,14 @@ function createMosh() {
   // --- commands ------------------------------------------------------------
 
   const commands = {
+    crew() {
+      openGenerator('crew')
+    },
+
+    npc() {
+      openGenerator('contractor')
+    },
+
     clear() {
       window.localStorage.removeItem(STORAGE_KEY_JOURNAL)
       window.localStorage.removeItem(STORAGE_KEY_MAP)
@@ -593,6 +612,7 @@ function createMosh() {
     countdownValue,
     encounterRate,
     exitModalOpen,
+    generatorDialog,
     importKind,
     importModalOpen,
     input,
@@ -610,6 +630,7 @@ function createMosh() {
     ready,
     // actions
     closeExitModal,
+    closeGenerator,
     closeImportModal,
     closeZoneModal,
     dismissEncounter,
@@ -617,6 +638,7 @@ function createMosh() {
     importData,
     load,
     openExitModal,
+    openGenerator,
     openZoneModal,
     resolveEncounter,
     saveExit,
