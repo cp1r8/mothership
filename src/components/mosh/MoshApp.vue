@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { useMosh } from '@/mosh/useMosh.js'
 import ExitModal from './ExitModal.vue'
 import ExitNav from './ExitNav.vue'
+import ImportModal from './ImportModal.vue'
 import SessionInput from './SessionInput.vue'
 import SessionLog from './SessionLog.vue'
 import ZoneModal from './ZoneModal.vue'
@@ -22,5 +23,6 @@ onBeforeUnmount(stop)
 
     <ZoneModal />
     <ExitModal />
+    <ImportModal />
   </div>
 </template>

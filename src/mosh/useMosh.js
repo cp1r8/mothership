@@ -11,7 +11,7 @@ import {
   STORAGE_KEY_MAP,
   directions,
 } from './constants.js'
-import { formatDate, formatTime } from './format.js'
+import { formatDate, formatTime, pad2 } from './format.js'
 
 const MOSH_KEY = Symbol('mosh')
 
@@ -25,6 +25,23 @@ function readStorage(key, fallback) {
   } catch {
     return fallback
   }
+}
+
+// Short ISO timestamp in UTC, e.g. 20261124T153045.
+function fileStamp() {
+  return new Date().toISOString().replace(/[-:]|\.\d+Z$/g, '')
+}
+
+function download(prefix, extension, content, type) {
+  const url = URL.createObjectURL(new Blob([content], { type }))
+  const link = document.createElement('a')
+
+  link.href = url
+  link.download = `${prefix}-${fileStamp()}.${extension}`
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
 }
 
 function writeStorage(key, value) {
@@ -63,6 +80,7 @@ function createMosh() {
 
   const zoneModalOpen = ref(false)
   const exitModalOpen = ref(false)
+  const importModalOpen = ref(false)
   // Settings offered by the zone modal for a zone that hasn't been described.
   const zoneDefaults = ref({})
 
@@ -314,6 +332,67 @@ function createMosh() {
     persistMap()
   }
 
+  function openImportModal() {
+    importModalOpen.value = true
+    suspendCountdown()
+  }
+
+  function closeImportModal() {
+    importModalOpen.value = false
+    focusInput()
+  }
+
+  /**
+   * Merges a JSON blob of zones into the map. Accepts either a map object
+   * ({ "A1": { ... } }) or a /dump blob ({ journal, map }). Imported settings
+   * overwrite existing ones; exits are merged per direction. Returns the number
+   * of zones merged, or throws an Error describing what is wrong.
+   */
+  function importZones(text) {
+    let data
+
+    try {
+      data = JSON.parse(text)
+    } catch (e) {
+      throw new Error(`Invalid JSON: ${e.message}`)
+    }
+
+    if (data && typeof data === 'object' && !Array.isArray(data) && 'map' in data) {
+      data = data.map
+    }
+
+    const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
+
+    if (!isObject(data)) {
+      throw new Error('Expected an object of zones keyed by zone ID.')
+    }
+
+    const entries = Object.entries(data)
+
+    for (const [zone, env] of entries) {
+      if (!isObject(env)) {
+        throw new Error(`Zone ${zone} must be an object.`)
+      }
+      if ('exits' in env && !isObject(env.exits)) {
+        throw new Error(`Zone ${zone} has invalid exits.`)
+      }
+    }
+
+    for (const [zone, { exits, ...settings }] of entries) {
+      const key = zone.trim().toLocaleUpperCase()
+      const existing = map.value[key] ?? {}
+
+      map.value[key] = {
+        ...existing,
+        ...settings,
+        exits: { ...existing.exits, ...exits },
+      }
+    }
+
+    persistMap()
+    return entries.length
+  }
+
   function takeExit(exit) {
     // A new zone starts with the settings of the zone being left.
     const { atmosphere, gravity, light, radiation, space } = environment.value
@@ -352,6 +431,49 @@ function createMosh() {
 
     dump() {
       console.log(JSON.stringify({ journal: journal.value, map: map.value }))
+    },
+
+    chronicle() {
+      if (!journal.value.length) {
+        log('No journal entries to export.', 'amber')
+        return
+      }
+
+      // Fixed-width fields: time (20), zone (4), encounter (3), then the comment.
+      const lines = journal.value.map((entry) => {
+        const time = new Date(entry.time).toISOString().replace(/\.\d+Z$/, 'Z')
+        const zone = (entry.zone ?? '-?-').padEnd(4)
+        const encounter =
+          typeof entry.encounter === 'number'
+            ? 'E' + pad2(entry.encounter)
+            : 'encounter' in entry
+              ? 'ENC'
+              : ''
+
+        return [time, zone, encounter.padEnd(3), entry.comment ?? 'NTR'].join(' ')
+      })
+
+      download('journal', 'txt', lines.join('\n') + '\n', 'text/plain')
+
+      const count = lines.length
+      log(`Exported ${count} journal entr${count === 1 ? 'y' : 'ies'}.`)
+    },
+
+    'export-map'() {
+      const count = Object.keys(map.value).length
+
+      if (!count) {
+        log('No zones to export.', 'amber')
+        return
+      }
+
+      download('zones', 'json', JSON.stringify(map.value, null, 2), 'application/json')
+
+      log(`Exported ${count} zone${count === 1 ? '' : 's'}.`)
+    },
+
+    'import-map'() {
+      openImportModal()
     },
 
     jump(zone) {
@@ -428,6 +550,7 @@ function createMosh() {
     countdownValue,
     encounterRate,
     exitModalOpen,
+    importModalOpen,
     input,
     inputEl,
     map,
@@ -443,9 +566,11 @@ function createMosh() {
     ready,
     // actions
     closeExitModal,
+    closeImportModal,
     closeZoneModal,
     dismissEncounter,
     expireCountdown,
+    importZones,
     load,
     openExitModal,
     openZoneModal,
